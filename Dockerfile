@@ -31,3 +31,4 @@ RUN git submodule update --init \
 WORKDIR /var/www/html
 
 RUN rm -rf *
+
