@@ -1,5 +1,11 @@
 # Dockerfile for php-fpm with gRPC
 
+## Install composer package
+
+```bash
+composer require grpc/grpc:^v1.19
+```
+
 ## Generate PHP files from *.proto
 
 ```bash

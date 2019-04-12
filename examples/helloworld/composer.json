@@ -1,0 +1,6 @@
+{
+  "description": "gRPC example for PHP-FPM",
+  "require": {
+    "grpc/grpc": "^v1.19"
+  }
+}
