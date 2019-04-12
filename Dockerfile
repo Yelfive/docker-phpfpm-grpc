@@ -1,14 +1,15 @@
 FROM yelfive/phpfpm-automated:7.2.3-1
 LABEL maintainer="yelfivehuang@gmail.com"
 
-WORKDIR /var/www/html
+# make china mirror as globally default reponsitory
+RUN composer config -g repo.packagist composer https://packagist.phpcomposer.com
 
 # gRPC Runtime extension for PHP: grpc.so
-RUN pecl install grpc
+COPY ext/grpc.so /usr/local/lib/php/extensions/no-debug-non-zts-20170718/grpc.so
 RUN echo extension=grpc.so > /usr/local/etc/php/conf.d/grpc.ini
 
 # protobuf Runtime extesnion for PHP: protobuf.so
-RUN pecl install protobuf
+COPY ext/protobuf.so /usr/local/lib/php/extensions/no-debug-non-zts-20170718/protobuf.so
 RUN echo extension=protobuf.so > /usr/local/etc/php/conf.d/protobuf.ini
 
 # protoc, compoiler of protocol buffer
@@ -19,17 +20,4 @@ COPY include/* /usr/local/include/
 # IDL: Interface Definition Language, aka. *.proto
 # After installing the plugin, the following command will be available
 #           protoc --php_out=<dir of generated *.php> file.proto
-RUN apt-get update && apt-get install -y git autoconf libtool automake
-RUN git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc
-
-WORKDIR grpc
-
-RUN git submodule update --init
-RUN make grpc_php_plugin
-RUN mv bins/opt/grpc_php_plugin /usr/local/bin/
-# grpc_php_plugin installed
-
-WORKDIR /var/www/html
-
-RUN rm -rf *
-
+COPY bin/grpc_php_plugin /usr/local/bin/grpc_php_plugin
