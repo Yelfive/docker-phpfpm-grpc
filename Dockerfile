@@ -4,7 +4,7 @@ LABEL maintainer="yelfivehuang@gmail.com"
 WORKDIR /var/www/html
 
 # gRPC Runtime extension for PHP: grpc.so
-RUN pecl install grpc-1.19.0
+RUN pecl install grpc
 RUN echo extension=grpc.so > /usr/local/etc/php/conf.d/grpc.ini
 
 # protobuf Runtime extesnion for PHP: protobuf.so
@@ -19,13 +19,14 @@ COPY include/* /usr/local/include/
 # IDL: Interface Definition Language, aka. *.proto
 # After installing the plugin, the following command will be available
 #           protoc --php_out=<dir of generated *.php> file.proto
+RUN apt-get update && apt-get install -y git autoconf libtool automake
 RUN git clone -b $(curl -L https://grpc.io/release) https://github.com/grpc/grpc
 
 WORKDIR grpc
 
-RUN git submodule update --init \
-    && make grpc_php_plugin \
-    && mv bins/opt/grpc_php_plugin /usr/local/bin/
+RUN git submodule update --init
+RUN make grpc_php_plugin
+RUN mv bins/opt/grpc_php_plugin /usr/local/bin/
 # grpc_php_plugin installed
 
 WORKDIR /var/www/html
